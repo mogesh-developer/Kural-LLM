@@ -303,25 +303,42 @@ def main():
                 logits = model(x)
                 # Compute loss ONLY on non-masked tokens (targets != -100)
                 loss = F.cross_entropy(
-                    logits.view(-1, logits.size(-1)),
+                    logits.view(-1, logits.size(-1)).float(),
                     targets.view(-1),
                     ignore_index=-100,
                 )
+                raw_loss_val = loss.item()
                 loss = loss / cfg.grad_accum_steps
 
+            # Safety Guard: Skip corrupted / exploding gradients
+            if not math.isfinite(raw_loss_val) or raw_loss_val > 15.0:
+                optimizer.zero_grad(set_to_none=True)
+                continue
+
             loss.backward()
-            total_train_loss += (loss.item() * cfg.grad_accum_steps)
+            total_train_loss += raw_loss_val
 
             if (batch_idx + 1) % cfg.grad_accum_steps == 0 or (batch_idx + 1) == len(train_loader):
-                torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip)
+                # Verify gradients are finite before optimizer step
+                valid_grads = True
+                for p in model.parameters():
+                    if p.grad is not None and not torch.isfinite(p.grad).all():
+                        valid_grads = False
+                        break
 
-                lr = get_lr(global_step)
-                for g in optimizer.param_groups:
-                    g["lr"] = lr
+                if valid_grads:
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip)
 
-                optimizer.step()
+                    lr = get_lr(global_step)
+                    for g in optimizer.param_groups:
+                        g["lr"] = lr
+
+                    optimizer.step()
+                    global_step += 1
+                else:
+                    print(f"⚠️ Skipped step at batch {batch_idx + 1} due to non-finite gradient.")
+
                 optimizer.zero_grad(set_to_none=True)
-                global_step += 1
 
             if (batch_idx + 1) % (cfg.log_every * cfg.grad_accum_steps) == 0:
                 avg_loss = total_train_loss / (batch_idx + 1)
@@ -375,3 +392,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
