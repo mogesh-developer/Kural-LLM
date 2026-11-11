@@ -36,15 +36,15 @@ widget:
 
 ## 🏛️ Model Specifications
 
-| Attribute | Kural-LLM (v3 Base - Current Release) | Kural-LLM (v4 Scaled) |
+| Attribute | Kural-LLM (v3 Base) | Kural-LLM (v4 Scaled - Latest Best) |
 | :--- | :--- | :--- |
-| **Parameters** | **54.68 Million** | **91.59 Million** |
+| **Parameters** | **54.68 Million** | **91.59 Million** (97.74M Total) |
 | **Hidden Dim ($d_{model}$)** | 640 | 768 |
 | **Layers ($N$)** | 10 | 12 |
 | **Attention Heads ($H$)** | 10 | 12 |
 | **Context Length** | 512 tokens | 512 tokens |
-| **Vocab Size** | 16,000 (Byte-level BPE) | 16,000 (Byte-level BPE) |
-| **Best Val Loss** | **3.6623** (Global Step 18,645) | In Training |
+| **Vocab Size** | 16,000 (Byte-level BPE) | 8,000 / 16,000 BPE |
+| **Best Val Loss** | 3.6623 (Step 18,645) | **3.5170** (Global Step 36,390) 🏆 |
 | **Activation** | GELU (tanh approximate) | GELU (tanh approximate) |
 | **Attention** | FlashAttention (PyTorch SDPA) | FlashAttention (PyTorch SDPA) |
 
