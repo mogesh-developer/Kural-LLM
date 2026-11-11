@@ -20,9 +20,9 @@ from tokenizers import Tokenizer
 class GPTConfig:
     vocab_size: int = 0
     context_length: int = 512
-    n_embd: int = 640
-    n_heads: int = 10
-    n_layers: int = 10
+    n_embd: int = 768
+    n_heads: int = 12
+    n_layers: int = 12
     dropout: float = 0.1
 
 
@@ -32,27 +32,27 @@ class TrainConfig:
     val_file: str = "data/processed/validation.txt"
     tokenizer_file: str = "tokenizer.json"
 
-    # Load clean v3 Stage 3 best checkpoint to continue training for Stage 4
-    resume_from: str = "checkpoints_v3_stage3/best.pt"
+    # Load from the latest trained 91.59M / 97.7M checkpoint
+    resume_from: str = "checkpoints_v4/last.pt"
 
-    # Output directory for v3 Stage 4 (preserving Stage 2 and Stage 3 checkpoints safely)
-    output_dir: str = "checkpoints_v3_stage4"
+    # Dedicated output directory for continuous polishing
+    output_dir: str = "checkpoints_v4_stage2"
 
-    # Automatically continue v3 Stage 4 if interrupted
+    # Automatically continue training if interrupted
     resume_v3_stage: bool = True
 
     seed: int = 42
-    epochs: int = 10
+    epochs: int = 15
 
-    # Hardware-optimized for RTX 4050 Laptop (6GB VRAM)
-    # Effective batch size = batch_size * grad_accum_steps = 16 * 4 = 64
-    batch_size: int = 16
-    grad_accum_steps: int = 4
+    # Hardware-optimized for RTX 4050 Laptop (6GB VRAM) / Kaggle T4:
+    # batch_size=8 + grad_accum_steps=8 yields effective batch size = 64
+    batch_size: int = 8
+    grad_accum_steps: int = 8
 
-    # Stage 4 fine-tuning learning rate (gentle polishing schedule)
-    learning_rate: float = 1.5e-5
-    min_learning_rate: float = 1.5e-6
-    weight_decay: float = 0.1
+    # Refined Learning Rate for deep convergence on top of 97.7M weights
+    learning_rate: float = 4.5e-5
+    min_learning_rate: float = 4.5e-6
+    weight_decay: float = 0.05
     grad_clip: float = 1.0
     warmup_steps: int = 50
 
