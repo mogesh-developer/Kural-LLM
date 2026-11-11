@@ -1,12 +1,36 @@
+---
+language:
+- ta
+license: mit
+library_name: pytorch
+tags:
+- causal-lm
+- text-generation
+- tamil
+- indic-nlp
+- gpt
+- from-scratch
+datasets:
+- custom
+metrics:
+- perplexity
+- loss
+pipeline_tag: text-generation
+widget:
+- text: "தமிழ்நாடு ஒரு"
+- text: "இயற்கை என்பது"
+- text: "தொழில்நுட்பம் நம் அன்றாட வாழ்க்கையில்"
+---
+
 # 📜 Kural-LLM: Decoder-Only Tamil Language Model
 
-**Kural-LLM** is an open-source, decoder-only causal language model trained specifically for the Tamil language from scratch. Built with a custom BPE tokenizer optimized for Tamil unicode morphology and a scalable Transformer architecture.
+**Kural-LLM** is an open-source, decoder-only causal language model trained natively from scratch for the Tamil language. Built with a custom BPE tokenizer optimized for Tamil unicode morphology and a scalable Transformer architecture.
 
 ---
 
 ## 🏛️ Model Specifications
 
-| Attribute | Kural-LLM (v3 Base) | Kural-LLM (v4 Scaled) |
+| Attribute | Kural-LLM (v3 Base - Current Release) | Kural-LLM (v4 Scaled) |
 | :--- | :--- | :--- |
 | **Parameters** | **54.68 Million** | **91.59 Million** |
 | **Hidden Dim ($d_{model}$)** | 640 | 768 |
@@ -14,6 +38,7 @@
 | **Attention Heads ($H$)** | 10 | 12 |
 | **Context Length** | 512 tokens | 512 tokens |
 | **Vocab Size** | 16,000 (Byte-level BPE) | 16,000 (Byte-level BPE) |
+| **Best Val Loss** | **3.6623** (Global Step 18,645) | In Training |
 | **Activation** | GELU (tanh approximate) | GELU (tanh approximate) |
 | **Attention** | FlashAttention (PyTorch SDPA) | FlashAttention (PyTorch SDPA) |
 
@@ -21,10 +46,10 @@
 
 ## 🚀 Key Features
 
-- **Custom Tamil Tokenizer:** Custom byte-level Byte-Pair Encoding (BPE) trained natively on Tamil text with proper vowel-consonant composition.
+- **Native Tamil Tokenizer:** Custom byte-level Byte-Pair Encoding (BPE) trained natively on Tamil text with full vowel-consonant composition.
 - **Pre-training from Scratch:** Step-by-step progressive pre-training with Cosine Annealing learning rate schedules and gradient clipping.
-- **Net2Net Architecture Scaling:** Successfully expanded from 54M to 91.6M parameters preserving existing representations.
-- **VRAM Optimized:** Configured for mixed-precision (FP16/TF32) with gradient accumulation for low VRAM requirements.
+- **High Stability:** Trained locally across multiple stages with strict gradient anomaly checks, reaching a stable validation loss of **3.6623**.
+- **Net2Net Architecture Scaling:** Successfully expanded to 91.6M parameters preserving existing representations.
 
 ---
 
@@ -50,7 +75,7 @@
 
 ### 1. Installation
 ```bash
-git clone https://github.com/<your-username>/Kural-LLM.git
+git clone https://github.com/mogesh-developer/Kural-LLM.git
 cd Kural-LLM
 python -m venv venv
 # On Windows:
@@ -60,13 +85,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Generate Tamil Text
+### 2. Generate Tamil Text with this Model
 ```bash
-python -m src.generate --checkpoint checkpoints_v3_stage4/last.pt --prompt "தமிழ்நாடு ஒரு"
+python -m src.generate --checkpoint pytorch_model.pt --prompt "தமிழ்நாடு ஒரு"
 ```
 
 ---
 
 ## 📜 License
 MIT License. Free to use for research, commercial, and educational purposes.
-
