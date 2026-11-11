@@ -24,7 +24,13 @@ widget:
 
 # 📜 Kural-LLM: Decoder-Only Tamil Language Model
 
+[![Hugging Face Model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Kural--LLM-yellow)](https://huggingface.co/mogesh2004/Kural-LLM)
+[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
 **Kural-LLM** is an open-source, decoder-only causal language model trained natively from scratch for the Tamil language. Built with a custom BPE tokenizer optimized for Tamil unicode morphology and a scalable Transformer architecture.
+
+🔗 **Pre-trained Weights & Model Hub:** [huggingface.co/mogesh2004/Kural-LLM](https://huggingface.co/mogesh2004/Kural-LLM)
 
 ---
 
