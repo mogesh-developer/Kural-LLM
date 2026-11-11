@@ -301,10 +301,13 @@ def main():
 
             with torch.autocast(device_type="cuda", dtype=amp_dtype):
                 logits = model(x)
-                # Compute loss ONLY on non-masked tokens (targets != -100)
+                # Next-token prediction requires shifting logits and targets!
+                shift_logits = logits[:, :-1, :].contiguous()
+                shift_targets = targets[:, 1:].contiguous()
+
                 loss = F.cross_entropy(
-                    logits.view(-1, logits.size(-1)).float(),
-                    targets.view(-1),
+                    shift_logits.view(-1, shift_logits.size(-1)).float(),
+                    shift_targets.view(-1),
                     ignore_index=-100,
                 )
                 raw_loss_val = loss.item()
@@ -352,9 +355,11 @@ def main():
                 vx, vy = vx.to(device), vy.to(device)
                 with torch.autocast(device_type="cuda", dtype=amp_dtype):
                     v_logits = model(vx)
+                    shift_v_logits = v_logits[:, :-1, :].contiguous()
+                    shift_vy = vy[:, 1:].contiguous()
                     v_loss = F.cross_entropy(
-                        v_logits.view(-1, v_logits.size(-1)),
-                        vy.view(-1),
+                        shift_v_logits.view(-1, shift_v_logits.size(-1)).float(),
+                        shift_vy.view(-1),
                         ignore_index=-100,
                     )
                 if torch.isfinite(v_loss):
