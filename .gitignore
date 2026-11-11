@@ -1,0 +1,32 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# PyTorch Checkpoints & Large Model Weights
+*.pt
+*.bin
+*.pth
+*.safetensors
+checkpoints*/
+checkpoints_v3*/
+checkpoints_v4*/
+
+# Raw & Processed Training Corpora (Keep repo lightweight)
+data/
+*.zip
+*.tar.gz
+
+# System & IDE files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
